@@ -14,29 +14,41 @@ public class Main {
         ArrayList<Task> tasksData = dataManager.loadData();
 
         System.out.println("Printing all data ...");
-        printAllData(tasksData);
+        //printAllData(tasksData);
+        printDeadlinesUsingParallelStreams(tasksData);
+        printDeadlinesUsingStreams(tasksData);
 
         System.out.println("Printing deadlines ...");
         printDeadlines(tasksData);
 
-        System.out.println("Total number of deadlines: " + countDeadlines(tasksData));
+        System.out.println("Total number of deadlines: " + countDeadlinesUsingStreams(tasksData));
 
     }
 
-    private static int countDeadlines(ArrayList<Task> tasksData) {
-        int count = 0;
-        for (Task t : tasksData) {
-            if (t instanceof Deadline) {
-                count++;
-            }
-        }
-        return count;
+    private static int countDeadlinesUsingStreams(ArrayList<Task> tasksData) {
+        return (int) tasksData.stream()
+                .filter(t -> t instanceof Deadline)
+                .count();
     }
 
     public static void printAllData(ArrayList<Task> tasksData) {
         for (Task t : tasksData) {
             System.out.println(t);
         }
+    }
+
+    public static void printDeadlinesUsingParallelStreams(ArrayList<Task> tasksData) {
+        System.out.println("Printing deadlines using parallel streams ...");
+        tasksData.parallelStream()
+                .filter(t -> t instanceof Deadline)
+                .forEach(System.out::println);
+    }
+
+    public static void printDeadlinesUsingStreams(ArrayList<Task> tasksData) {
+        System.out.println("Printing deadlines using streams ...");
+        tasksData.stream()
+                .filter(t -> t instanceof Deadline)
+                .forEach(System.out::println);
     }
 
     public static void printDeadlines(ArrayList<Task> tasksData) {
