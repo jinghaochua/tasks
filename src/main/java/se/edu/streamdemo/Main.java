@@ -4,7 +4,9 @@ import se.edu.streamdemo.data.Datamanager;
 import se.edu.streamdemo.task.Deadline;
 import se.edu.streamdemo.task.Task;
 
+
 import java.util.ArrayList;
+import static java.util.stream.Collectors.toList;
 
 public class Main {
 
@@ -13,15 +15,20 @@ public class Main {
         Datamanager dataManager = new Datamanager("./data/data.txt");
         ArrayList<Task> tasksData = dataManager.loadData();
 
-        System.out.println("Printing all data ...");
-        //printAllData(tasksData);
+        System.out.println("\nPrinting all data ...");
+        printAllData(tasksData);
+
         printDeadlinesUsingParallelStreams(tasksData);
         printDeadlinesUsingStreams(tasksData);
 
-        System.out.println("Printing deadlines ...");
+        System.out.println("\nPrinting deadlines ...");
         printDeadlines(tasksData);
+        printDeadlinesUsingStreamsWithMethodReference(tasksData);
 
-        System.out.println("Total number of deadlines: " + countDeadlinesUsingStreams(tasksData));
+        System.out.println("\nTotal number of deadlines: " + countDeadlinesUsingStreams(tasksData));
+
+        ArrayList<Task> filteredTasks = filterTasksByString(tasksData, "10");
+        printAllData(filteredTasks);
 
     }
 
@@ -38,14 +45,14 @@ public class Main {
     }
 
     public static void printDeadlinesUsingParallelStreams(ArrayList<Task> tasksData) {
-        System.out.println("Printing deadlines using parallel streams ...");
+        System.out.println("\nPrinting deadlines using parallel streams ...");
         tasksData.parallelStream()
                 .filter(t -> t instanceof Deadline)
                 .forEach(System.out::println);
     }
 
     public static void printDeadlinesUsingStreams(ArrayList<Task> tasksData) {
-        System.out.println("Printing deadlines using streams ...");
+        System.out.println("\nPrinting deadlines using streams ...");
         tasksData.stream()
                 .filter(t -> t instanceof Deadline)
                 .forEach(System.out::println);
@@ -57,6 +64,21 @@ public class Main {
                 System.out.println(t);
             }
         }
+    }
+
+    public static void printDeadlinesUsingStreamsWithMethodReference(ArrayList<Task> tasksData) {
+        System.out.println("\nPrinting deadlines using streams with method reference ...");
+        tasksData.stream()
+                .filter(t -> t instanceof Deadline)
+                .sorted((t1, t2) -> t1.getDescription().compareToIgnoreCase(t2.getDescription()))
+                .forEach(System.out::println);
+    }
+
+    public static ArrayList<Task> filterTasksByString(ArrayList<Task> tasksData, String filterString) {
+        System.out.println("\nFiltering tasks by string: " + filterString);
+        return (ArrayList<Task>) tasksData.stream()
+                .filter(t -> t.getDescription().toLowerCase().contains(filterString.toLowerCase()))
+                .collect(toList());
     }
 
 }
