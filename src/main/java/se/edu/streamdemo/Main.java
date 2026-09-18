@@ -30,6 +30,7 @@ public class Main {
         ArrayList<Task> filteredTasks = filterTasksByString(tasksData, "10");
         printAllData(filteredTasks);
 
+        System.out.println("Total number of deadlines: " + countDeadlinesUsingStreams(tasksData));
     }
 
     private static int countDeadlinesUsingStreams(ArrayList<Task> tasksData) {
