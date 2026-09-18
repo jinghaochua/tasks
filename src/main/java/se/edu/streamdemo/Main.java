@@ -22,7 +22,6 @@ public class Main {
         printDeadlines(tasksData);
 
         System.out.println("Total number of deadlines: " + countDeadlinesUsingStreams(tasksData));
-
     }
 
     private static int countDeadlinesUsingStreams(ArrayList<Task> tasksData) {
